@@ -29,6 +29,7 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
         // HINT: Initial balance should equal credit limit (all credit available)
         // TODO: Initialize credit limit and reward points
         super(accountHolder, accountId, creditLimit)
+        this.creditLimit = creditLimit;
         this.rewardPoints = 0;
     }
 
@@ -74,13 +75,19 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
         // 2. If yes: increase balance (restore credit), return true
         // 3. Don't let balance exceed credit limit
         // 4. If no: return false
+        if (amount <= getRefundLimit()) {
+            if ((balance + amount) <= getCreditLimit()) {
+                balance += amount;
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public double getRefundLimit() {
         // TODO: Return the refund limit constant
-        return 0.0;
+        return REFUND_LIMIT
     }
 
     @Override
@@ -95,14 +102,13 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
 
     @Override
     public int getRewardPoints() {
-        // TODO: Return current reward points
-        return 0;
+        return rewardPoints;
     }
 
     @Override
     public double getRewardRate() {
         // TODO: Return the reward rate constant
-        return 0.0;
+        return REWARD_RATE;
     }
 
     public double getCreditLimit() {
