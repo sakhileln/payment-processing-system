@@ -16,8 +16,9 @@ public class DebitCard extends PaymentMethod implements Refundable {
 
     public DebitCard(String accountHolder, String accountId, double initialBalance) {
         // TODO: Call parent constructor
-
         // TODO: Store original balance for refund calculations
+        super(accountHolder, accountId, initialBalance)
+        this.originalBalance = initialBalance;
     }
 
     @Override
@@ -28,19 +29,30 @@ public class DebitCard extends PaymentMethod implements Refundable {
         // 3. Check if sufficient balance
         // 4. If yes: deduct from balance, return true
         // 5. If no: return false
+        if (!isActive()) {
+            return false;
+        }
+
+        double fee = getTransactionFee(amount);
+        double total = amount + fee;
+
+        if (getBalance() >= total) {
+            balance -= total;
+            return true;
+        }
         return false;
     }
 
     @Override
     public String getPaymentType() {
         // TODO: Return "Debit Card"
-        return null;
+        return "Debit Card";
     }
 
     @Override
     public double getTransactionFee(double amount) {
         // TODO: Return flat fee (doesn't depend on amount)
-        return 0.0;
+        return TRANSACTION_FEE;
     }
 
     @Override
@@ -49,12 +61,16 @@ public class DebitCard extends PaymentMethod implements Refundable {
         // 1. Check if amount <= refund limit (don't exceed original balance)
         // 2. If yes: add to balance, update original balance, return true
         // 3. If no: return false
+        if (amount <= getRefundLimit()) {
+            balance += amount;
+            return true;
+        }
         return false;
     }
 
     @Override
     public double getRefundLimit() {
         // TODO: Return current balance as refund limit
-        return 0.0;
+        return getBalance();
     }
 }
