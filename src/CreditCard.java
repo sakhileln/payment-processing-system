@@ -28,7 +28,8 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
         // TODO: Call parent constructor with appropriate parameters
         // HINT: Initial balance should equal credit limit (all credit available)
         // TODO: Initialize credit limit and reward points
-        
+        super(accountHolder, accountId, creditLimit)
+        this.rewardPoints = 0;
     }
 
     @Override
@@ -39,6 +40,28 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
         // 3. Check if enough credit available (balance >= total cost)
         // 4. If yes: reduce balance, add reward points, return true
         // 5. If no: return false
+//        if super.isActive() {
+//            double total = amount + TRANSACTION_FEE_RATE;
+//            if balance >= total {
+//                balance -= total
+//                this.rewardPoints += (amount * REWARD_RATE);
+//                return true;
+//            }
+//            return false;
+//        }
+//        return false;
+
+        if (!isActive()) {
+            return false;
+        }
+
+        double fee = getTransactionFee(amount);
+        double total = amount + fee;
+        if (balance >= total) {
+            balance -= total;
+            addRewardPoints(amount);
+            return true;
+        }
         return false;
     }
 
