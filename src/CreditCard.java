@@ -40,16 +40,6 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
         // 3. Check if enough credit available (balance >= total cost)
         // 4. If yes: reduce balance, add reward points, return true
         // 5. If no: return false
-//        if super.isActive() {
-//            double total = amount + TRANSACTION_FEE_RATE;
-//            if balance >= total {
-//                balance -= total
-//                this.rewardPoints += (amount * REWARD_RATE);
-//                return true;
-//            }
-//            return false;
-//        }
-//        return false;
 
         if (!isActive()) {
             return false;
@@ -68,13 +58,13 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
     @Override
     public String getPaymentType() {
         // TODO: Return "Credit Card"
-        return null;
+        return "Credit Card";
     }
 
     @Override
     public double getTransactionFee(double amount) {
         // TODO: Calculate and return 2.5% fee
-        return 0.0;
+        return amount * TRANSACTION_FEE_RATE;
     }
 
     @Override
@@ -96,6 +86,11 @@ public class CreditCard extends PaymentMethod implements Refundable, RewardEarni
     @Override
     public void addRewardPoints(double amount) {
         // TODO: Add reward points based on amount spent and REWARD_RATE
+        if (amount > 0) {
+            this.rewardPoints += (amount * REWARD_RATE);
+        } else {
+            this.rewardPoints += 0;
+        }
     }
 
     @Override
